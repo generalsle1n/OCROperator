@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OCROperator.Models.Interface
 {
-    internal interface IWatcher
+    internal class FileSystem : IWatcher
     {
     }
 }
