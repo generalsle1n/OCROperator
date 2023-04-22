@@ -16,7 +16,7 @@ namespace OCROperator
         {
             _logger = logger;
             _config = config;
-
+            _logger.LogInformation("Init Watcher");
             AllWatcher = GetWatchers();
         }
 
@@ -29,6 +29,7 @@ namespace OCROperator
             foreach(IWatcher watcher in RawWatchers)
             {
                 IWatcher SingleWatcher = _rFactory.CreateObjectFromRaw((RawWatcher)watcher);
+                SingleWatcher.SetupLogger(_logger);
                 SingleWatcher.Setup();
                 AllWatcher.Add(SingleWatcher);
             }
@@ -43,7 +44,7 @@ namespace OCROperator
                 foreach(IWatcher watcher in AllWatcher)
                 {
                     _logger.LogInformation($"Skipped Watcher{DateTime.Now}");
-                    watcher.Execute();
+                    await watcher.Execute();
                 }
                 await Task.Delay(1000, stoppingToken);
             }
