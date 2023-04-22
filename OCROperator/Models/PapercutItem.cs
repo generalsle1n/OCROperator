@@ -31,6 +31,21 @@ namespace OCROperator.Models
         public Setting Setting { get; init; }
         [JsonPropertyName("user")]
         public User User { get; init; }
+
+        private const string ScanToFolderIDPath = "action.folder_any.4006";
+
+        public string GetPathWithFile()
+        {
+            string Result = string.Empty;
+            foreach(Field Setting in Fields)
+            {
+                if (Setting.ID.Equals(ScanToFolderIDPath))
+                {
+                    Result = $@"{Setting.Value}\{Files[0]}";
+                }
+            }
+            return Result;
+        }
     }
 
     public class Field
