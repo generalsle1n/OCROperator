@@ -1,4 +1,6 @@
 ﻿using OCROperator.Factory;
+using OCROperator.Models.Interface.Action;
+using Patagames.Pdf;
 using Patagames.Pdf.Enums;
 using Patagames.Pdf.Net;
 using System;
@@ -19,65 +21,54 @@ namespace OCROperator.Models.Interface
     {
         public string Destination { get; set; }
         public string SuffixMetadata { get; set; }
-        public string Action { get; set; }
+        public string ActionType { get; set; }
+        public string ActionSettings { get; set; }
+        public IAction Action { get; set; }
         public string Type { get; set; }
         public string Language { get; set; }
         public MailFactory MailFactory { get; set; }
         public List<Task> AllItems { get; set; } = new List<Task>();
+        public ILogger Logger { get; set; }
+        public OCRFactory OCRFactory { get; set; }
         public void Setup()
         {
             string AllPath = Path.Combine(Directory.GetCurrentDirectory(), "tesseractData");
+            Logger.LogInformation("Set Mailconfig");
             MailFactory = new MailFactory
             {
                 SMTPServer = "smtp.wehrle-werk.internal",
                 FromMail = "ocr@wehrle-werk.internal",
                 Port = 25
             };
+            OCRFactory = new OCRFactory()
+            {
+                TesseractDataPath = Path.Combine(Directory.GetCurrentDirectory(), "tesseractData"),
+                Language = Language,
+                Logger = Logger
+            };
+            OCRFactory.Setup();
+            Action.Setup(Logger, MailFactory);
         }
         public async Task Execute()
         {
             string[] AllFiles = Directory.GetFiles(Destination, SuffixMetadata);
-
-            foreach(string SingleItem in AllFiles)
+            Logger.LogInformation($"{AllFiles.Length} found");
+            foreach(string SingleFile in AllFiles)
             {
-                
+                string MetadataContent = File.ReadAllText(SingleFile);
+                File.Delete(SingleFile);
+                Logger.LogInformation($"File read {SingleFile} and deleted");
 
-                //string pdfPath = Path.Combine(Item.Fields[0].Value, $"{Item.Fields[1].Value}.pdf");
-
-                //PdfDocument OrginalPDF = PdfDocument.Load(pdfPath);
-                ////File.Delete(pdfPath);
-                
-                //StringBuilder Content = new StringBuilder();
-                //foreach (PdfPage page in OrginalPDF.Pages)
-                //{
-                //    //PdfBitmap Image = new PdfBitmap((int)page.Width*2, (int)page.Height*2, false);
-                //    //page.Render(Image, 0, 0, (int)page.Width*2, (int)page.Height*2, PageRotate.Normal, RenderFlags.FPDF_LCD_TEXT);
-                //    //string imagePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-                //    //Image.Image.Save(imagePath, System.Drawing.Imaging.ImageFormat.Png);
-                //    //Pix pixelContent = Pix.LoadFromFile(imagePath);
-                //    ////File.Delete(imagePath);
-                //    //Page TPage = _engine.Process(pixelContent);
-                //    //Content.Append(TPage.GetText());
-                //    //var a = new MailAddressCollection();
-                //    //a.Add(new MailAddress(Item.User.Email));
-                //    //var mail = new MailMessage
-                //    //{
-                //    //    From = new MailAddress("ocr@wehrle-werk.internal"),
-                //    //    Body = Content.ToString(),
-                //    //    Subject = "OCR"
-                //    //};
-                //    //mail.To.Add(new MailAddress(Item.User.Email));
-                //    //_smtp.Send(mail);
-                //}
+                PapercutItem SingleItem = JsonSerializer.Deserialize<PapercutItem>(MetadataContent) ?? new PapercutItem();
+                AllItems.Add(ProcessSingleItem(SingleItem));
             }
         }
 
-        public async Task ProcessSingleItem(string Item)
+        public async Task ProcessSingleItem(PapercutItem Item)
         {
-            string MetadataContent = File.ReadAllText(Item);
-            File.Delete(Item);
-
-            PapercutItem SingleItem = JsonSerializer.Deserialize<PapercutItem>(MetadataContent) ?? new PapercutItem();
+            string path = Item.GetPathWithFile();
+            string result = OCRFactory.GetTextFromPDF(path);
+            Action.Execute(Item, result);
         }
     }
 }
