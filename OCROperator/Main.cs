@@ -28,6 +28,10 @@ IHost host = Host.CreateDefaultBuilder(args)
             .MinimumLevel.Information();
         Log.Logger = LoggerConfig.CreateLogger();
     })
+    .UseWindowsService(conf =>
+    {
+        conf.ServiceName = "OCROperator";
+    })
     .UseSerilog()
     .Build();
 
