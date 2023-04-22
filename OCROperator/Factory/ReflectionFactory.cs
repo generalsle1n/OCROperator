@@ -1,4 +1,5 @@
 ﻿using OCROperator.Models.Interface;
+using OCROperator.Models.Interface.Action;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,18 @@ namespace OCROperator.Factory
             IWatcher TypedWatcher = (IWatcher)Activator.CreateInstance(WatcherType);
 
             TypedWatcher = CopyPropertiesIntoObject(watcher, TypedWatcher);
+            TypedWatcher = SetupAction(TypedWatcher);
             return TypedWatcher;
+        }
+
+        private IWatcher SetupAction(IWatcher typedWatcher)
+        {
+            Type ActionType = Type.GetType(typedWatcher.ActionType);
+            IAction Typed = (IAction)Activator.CreateInstance(ActionType);
+            Typed.Settings = typedWatcher.ActionSettings;
+            typedWatcher.Action = Typed;
+
+            return typedWatcher;
         }
 
         internal IWatcher CopyPropertiesIntoObject(IWatcher SourceWatcher, IWatcher DestinationWatcher)
