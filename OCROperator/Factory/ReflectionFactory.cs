@@ -35,7 +35,8 @@ namespace OCROperator.Factory
         {
             DestinationWatcher.Destination = SourceWatcher.Destination;
             DestinationWatcher.SuffixMetadata = SourceWatcher.SuffixMetadata;
-            DestinationWatcher.Action = SourceWatcher.Action;
+            DestinationWatcher.ActionSettings = SourceWatcher.ActionSettings;
+            DestinationWatcher.ActionType = SourceWatcher.ActionType;
             DestinationWatcher.Type = SourceWatcher.Type;
             DestinationWatcher.Language = SourceWatcher.Language;
             return DestinationWatcher;
