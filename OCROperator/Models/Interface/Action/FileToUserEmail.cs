@@ -15,7 +15,9 @@ namespace OCROperator.Models.Interface.Action
 
         public bool Execute(PapercutItem Item, string Text)
         {
-            return false;
+            MailFactory.SendMail("OCRScan2Text", Text, new string[] {Item.User.Email});
+            Logger.LogInformation($"Mail send to {Item.User.Email}");
+            return true;
         }
     }
 }
