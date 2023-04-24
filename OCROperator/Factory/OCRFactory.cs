@@ -1,12 +1,7 @@
-﻿using Patagames.Pdf.Enums;
-using Patagames.Pdf.Net;
-using System;
-using System.Collections.Generic;
+﻿using itext.pdfimage;
+using iText.Kernel.Pdf;
 using System.Drawing;
-using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using Tesseract;
 
 namespace OCROperator.Factory
@@ -22,38 +17,46 @@ namespace OCROperator.Factory
             _engine = new TesseractEngine(TesseractDataPath, Language);
         }
 
-        internal string GetTextFromPDF(string PDFPath)
+        internal string GetTextFromPDF(string PDFPath, bool DetelePDF = false)
         {
             StringBuilder Content = new StringBuilder();
-            byte[] pdfContent = File.ReadAllBytes(PDFPath);
-            File.Delete(PDFPath);
-            Logger.LogInformation($"File {PDFPath} read and deleted");
-
-            using(PdfDocument pdf = PdfDocument.Load(pdfContent))
+            using (PdfReader pdfReader = new PdfReader(PDFPath))
             {
+                Logger.LogInformation($"File read {PDFPath}");
+                
+                using(PdfDocument MainDocument = new PdfDocument(pdfReader))
+            {
+                    int AllPages = MainDocument.GetNumberOfPages();
                 int Count = 1;
-                foreach(PdfPage page in pdf.Pages)
+                    PdfToImageConverter Converter = new PdfToImageConverter();
+                    while(Count <= AllPages)
                 {
-                    //string tempFileName = Path.Combine(Path.GetTempPath(), Path.GetTempFileName());
-                    using(PdfBitmap Image = new PdfBitmap((int)page.Width * 2, (int)page.Height * 2, false))
+                        PdfPage SinglePage = MainDocument.GetPage(Count);
+                        Bitmap BitMap = Converter.ConvertToBitmap(SinglePage);
+
+                        using(MemoryStream ms = new MemoryStream())
                     {
-                        page.Render(Image, 0, 0, (int)page.Width * 2, (int)page.Height * 2, PageRotate.Normal, RenderFlags.FPDF_LCD_TEXT);
-                        using (MemoryStream ms = new MemoryStream())
+                            BitMap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                            using (Pix picture = Pix.LoadFromMemory(ms.ToArray()))
                         {
-                            Image.Image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                            using(Pix picture = Pix.LoadFromMemory(ms.ToArray()))
-                            {
                                 using(Page TPage = _engine.Process(picture))
                                 {
                                     Content.Append(TPage.GetText());
                                 }
                             }
                         }
+
+                        Logger.LogInformation($"Processed {Count} from {AllPages}");
+                        Count++;
                     }
-                    Logger.LogInformation($"Process {Count} from {pdf.Pages.Count}");
-                    Count++;
                 }
+                }
+            if (DetelePDF)
+            {
+                File.Delete(PDFPath);
+                Logger.LogInformation($"{PDFPath} deleted");
             }
+            
             return Content.ToString();
         }
     }
