@@ -22,6 +22,10 @@ IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureLogging(logger =>
     {
         string LogPath = Path.Combine(Directory.GetCurrentDirectory(), "Logs");
+        if (!Directory.Exists(LogPath))
+        {
+            Directory.CreateDirectory(LogPath);
+        }
         LoggerConfiguration LoggerConfig = new LoggerConfiguration()
             .WriteTo.Console()
             .WriteTo.File(LogPath, rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true)
