@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -16,6 +16,7 @@
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="Tesseract" Version="5.2.0" />
     <PackageReference Include="ThomSoft.itext7.pdfimage" Version="1.0.2" />
+    <PackageReference Include="Zammad.Client" Version="1.2.33" />
   </ItemGroup>
 
   <ItemGroup>
