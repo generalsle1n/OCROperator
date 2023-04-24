@@ -32,14 +32,14 @@ namespace OCROperator.Models
         [JsonPropertyName("user")]
         public User User { get; init; }
 
-        private const string ScanToFolderIDPath = "action.folder_any.4006";
+        private const string ScanToFolderIDPath = "action.folder_any.";
 
         public string GetPathWithFile()
         {
             string Result = string.Empty;
             foreach(Field Setting in Fields)
             {
-                if (Setting.ID.Equals(ScanToFolderIDPath))
+                if (Setting.ID.StartsWith(ScanToFolderIDPath))
                 {
                     Result = $@"{Setting.Value}\{Files[0]}";
                 }
