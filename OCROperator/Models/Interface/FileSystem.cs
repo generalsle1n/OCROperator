@@ -1,19 +1,6 @@
 ﻿using OCROperator.Factory;
 using OCROperator.Models.Interface.Action;
-using Patagames.Pdf;
-using Patagames.Pdf.Enums;
-using Patagames.Pdf.Net;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Net.Mail;
-using System.Reflection.Metadata;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Tesseract;
 
 namespace OCROperator.Models.Interface
 {
