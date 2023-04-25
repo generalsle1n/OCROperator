@@ -21,13 +21,13 @@ IHost host = Host.CreateDefaultBuilder(args)
     })
     .ConfigureLogging(logger =>
     {
-        string LogPath = Path.Combine(Directory.GetCurrentDirectory(), "Logs");
+        string LogPath = Path.Combine(Directory.GetCurrentDirectory(), @"Logs\");
         if (!Directory.Exists(LogPath))
         {
             Directory.CreateDirectory(LogPath);
         }
         LoggerConfiguration LoggerConfig = new LoggerConfiguration()
-            .WriteTo.Console()
+            .WriteTo.Console().MinimumLevel.Debug()
             .WriteTo.File(LogPath, rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true)
             .MinimumLevel.Information();
         Log.Logger = LoggerConfig.CreateLogger();
