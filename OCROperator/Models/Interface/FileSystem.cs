@@ -55,7 +55,7 @@ namespace OCROperator.Models.Interface
         {
             string path = Item.GetPathWithFile();
             Logger.LogInformation("Get Text from PDF");
-            string result = OCRFactory.GetTextFromPDF(path, true);
+            string result = OCRFactory.GetTextFromPDF(path);
             Logger.LogInformation("OCR finished");
             await Action.Execute(Item, result);
         }
