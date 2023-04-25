@@ -12,6 +12,6 @@ namespace OCROperator.Models.Interface.Action
             Logger = logger;
             MailFactory = mailFactory;
         }
-        bool Execute(PapercutItem Item, string Text);
+        Task Execute(PapercutItem Item, string Text);
     }
 }
