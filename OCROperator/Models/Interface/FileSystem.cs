@@ -39,7 +39,7 @@ namespace OCROperator.Models.Interface
         public async Task Execute()
         {
             string[] AllFiles = Directory.GetFiles(Destination, SuffixMetadata);
-            Logger.LogInformation($"{AllFiles.Length} found");
+            Logger.LogDebug($"{AllFiles.Length} found");
             foreach(string SingleFile in AllFiles)
             {
                 string MetadataContent = File.ReadAllText(SingleFile);
@@ -54,8 +54,10 @@ namespace OCROperator.Models.Interface
         public async Task ProcessSingleItem(PapercutItem Item)
         {
             string path = Item.GetPathWithFile();
-            string result = OCRFactory.GetTextFromPDF(path);
-            Action.Execute(Item, result);
+            Logger.LogInformation("Get Text from PDF");
+            string result = OCRFactory.GetTextFromPDF(path, true);
+            Logger.LogInformation("OCR finished");
+            await Action.Execute(Item, result);
         }
     }
 }
