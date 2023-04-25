@@ -41,7 +41,6 @@ namespace OCROperator
             {
                 foreach(IWatcher watcher in AllWatcher)
                 {
-                    _logger.LogInformation($"Skipped Watcher{DateTime.Now}");
                     await watcher.Execute();
                 }
                 await Task.Delay(1000, stoppingToken);
