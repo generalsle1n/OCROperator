@@ -1,7 +1,5 @@
 using OCROperator.Factory;
-using OCROperator.Models;
 using OCROperator.Models.Interface;
-using System.Net;
 
 namespace OCROperator
 {
