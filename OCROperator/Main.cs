@@ -21,7 +21,8 @@ IHost host = Host.CreateDefaultBuilder(args)
     })
     .ConfigureLogging(logger =>
     {
-        string LogPath = Path.Combine(Directory.GetCurrentDirectory(), @"Logs\");
+        string BinaryPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+        string LogPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), @"Logs\");
         if (!Directory.Exists(LogPath))
         {
             Directory.CreateDirectory(LogPath);

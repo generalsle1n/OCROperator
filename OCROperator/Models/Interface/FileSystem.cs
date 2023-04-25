@@ -29,7 +29,7 @@ namespace OCROperator.Models.Interface
             };
             OCRFactory = new OCRFactory()
             {
-                TesseractDataPath = Path.Combine(Directory.GetCurrentDirectory(), "tesseractData"),
+                TesseractDataPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "tesseractData"),
                 Language = Language,
                 Logger = Logger
             };
