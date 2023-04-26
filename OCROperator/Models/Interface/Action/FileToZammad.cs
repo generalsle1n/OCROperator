@@ -119,8 +119,6 @@ namespace OCROperator.Models.Interface.Action
 
         private async Task<Zammad.Client.Resources.User> GetUserFromMail(string Email)
         {
-            Zammad.Client.Resources.User Result;
-            //_userClient.SearchUserAsync()
             try
             {
                 IList<Zammad.Client.Resources.User> SearchResult = await _userClient.SearchUserAsync($"email:{Email.ToLower()}", 1);
