@@ -41,7 +41,7 @@ namespace OCROperator
             {
                 foreach(IWatcher watcher in AllWatcher)
                 {
-                    await watcher.Execute();
+                    await watcher.ExecuteAsync();
                 }
                 await Task.Delay(1000, stoppingToken);
             }

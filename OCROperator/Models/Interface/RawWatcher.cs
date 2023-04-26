@@ -25,7 +25,11 @@ namespace OCROperator.Models.Interface
         {
             throw new NotImplementedException();
         }
-        public async Task Execute()
+        public async Task ExecuteAsync()
+        {
+            throw new NotImplementedException();
+        }
+        public async Task ProcessSingleItemAsync(PapercutItem Item)
         {
             throw new NotImplementedException();
         }

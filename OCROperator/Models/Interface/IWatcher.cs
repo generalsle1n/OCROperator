@@ -25,7 +25,8 @@ namespace OCROperator.Models.Interface
         void SetupLogger(ILogger logger) {
             Logger = logger;
         }
-        internal Task Execute();
+        internal Task ExecuteAsync();
         internal Task ProcessSingleItem(PapercutItem Item);
+        internal Task ProcessSingleItemAsync(PapercutItem Item);
     }
 }

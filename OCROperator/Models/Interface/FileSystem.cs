@@ -36,7 +36,7 @@ namespace OCROperator.Models.Interface
             OCRFactory.Setup();
             Action.Setup(Logger, MailFactory);
         }
-        public async Task Execute()
+        public async Task ExecuteAsync()
         {
             string[] AllFiles = Directory.GetFiles(Destination, SuffixMetadata);
             Logger.LogDebug($"{AllFiles.Length} found");
@@ -47,11 +47,11 @@ namespace OCROperator.Models.Interface
                 Logger.LogInformation($"File read {SingleFile} and deleted");
 
                 PapercutItem SingleItem = JsonSerializer.Deserialize<PapercutItem>(MetadataContent) ?? new PapercutItem();
-                AllItems.Add(ProcessSingleItem(SingleItem));
+                AllItems.Add(ProcessSingleItemAsync(SingleItem));
             }
         }
 
-        public async Task ProcessSingleItem(PapercutItem Item)
+        public async Task ProcessSingleItemAsync(PapercutItem Item)
         {
             string path = Item.GetPathWithFile();
             Logger.LogInformation("Get Text from PDF");
