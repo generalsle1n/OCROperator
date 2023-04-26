@@ -17,7 +17,7 @@ namespace OCROperator.Factory
             _engine = new TesseractEngine(TesseractDataPath, Language);
         }
 
-        internal string GetTextFromPDF(string PDFPath, bool DetelePDF = false)
+        internal string GetTextFromPDF(string PDFPath)
         {
             StringBuilder Content = new StringBuilder();
             using (PdfReader pdfReader = new PdfReader(PDFPath))
@@ -50,11 +50,6 @@ namespace OCROperator.Factory
                         Count++;
                     }
                 }
-            }
-            if (DetelePDF)
-            {
-                File.Delete(PDFPath);
-                Logger.LogInformation($"{PDFPath} deleted");
             }
             
             return Content.ToString();
