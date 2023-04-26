@@ -59,6 +59,12 @@ namespace OCROperator.Models.Interface
             string result = OCRFactory.GetTextFromPDF(path);
             Logger.LogInformation("OCR finished");
             await Action.Execute(Item, result);
+            if(HoldPDF == false)
+            {
+                await DeletePDFAsync(Item);
+            }
+        }
+
         public async Task DeletePDFAsync(PapercutItem Item)
         {
             string path = Item.GetPathWithFile();
