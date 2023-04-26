@@ -79,7 +79,7 @@ Used mostly Interfaces to allowes multiple classes that can define actions over 
 If you have any feedback, please open an issue or an pull request 😀
 
 
-## Features MUSS NOCHJ GEMACHT WERDEN
+## Features
 This tool searchs asynchron for pdf and metadata that are specifid in an watcher config.
 If the tool finds some the tools process the pdf with the ocr enginge tesseract to get the text and then the file with the text is transferd to an action which can do any stuff with the pdf (Upload to an ticketsystem, erp, crm or so on)
 Currently it only works in connection with papercut mf, because papercut generate an metadata json which is processed
@@ -148,6 +148,8 @@ There is an example config in the repo
 - deu (German)
 - eng (English)
 - spa (spanish)
+
+`HoldPDF`: Decide if the pdf after the process is fisnihed should be hold and not deleted **bool**
 
 ### MailFactory
 
