@@ -128,7 +128,7 @@ namespace OCROperator.Models.Interface.Action
             }
             catch(Exception ex)
             {
-                Logger.LogError($"An Error occured by searching user with mail {Email}");
+                Logger.LogError(ex, $"An Error occured by searching user with mail {Email}");
             }
             return null;
         }
