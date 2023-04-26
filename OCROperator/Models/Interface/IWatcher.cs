@@ -27,7 +27,7 @@ namespace OCROperator.Models.Interface
             Logger = logger;
         }
         internal Task ExecuteAsync();
-        internal Task ProcessSingleItem(PapercutItem Item);
+        internal Task DeletePDFAsync(PapercutItem Item);
         internal Task ProcessSingleItemAsync(PapercutItem Item);
     }
 }

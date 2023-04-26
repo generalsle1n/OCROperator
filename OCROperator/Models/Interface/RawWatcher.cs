@@ -34,7 +34,7 @@ namespace OCROperator.Models.Interface
         {
             throw new NotImplementedException();
         }
-        public async Task ProcessSingleItem(PapercutItem Item)
+        public async Task DeletePDFAsync(PapercutItem Item)
         {
             throw new NotImplementedException();
         }
