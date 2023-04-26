@@ -13,6 +13,7 @@ namespace OCROperator.Models.Interface
         public IAction Action { get; set; }
         public string Type { get; set; }
         public string Language { get; set; }
+        public bool HoldPDF { get; set; }
         public MailFactory MailFactory { get; set; }
         public List<Task> AllItems { get; set; } = new List<Task>();
         public ILogger Logger { get; set; }

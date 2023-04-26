@@ -17,6 +17,7 @@ namespace OCROperator.Models.Interface
         internal IAction Action { get;set; }
         internal string Type { get; set; }
         internal string Language { get; set; }
+        internal bool HoldPDF { get; set; }
         internal MailFactory MailFactory { get; set; }
         internal List<Task> AllItems { get; set; }
         internal ILogger Logger { get; set; }
