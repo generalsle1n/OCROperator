@@ -1,3 +1,4 @@
+﻿using AutoMapper;
 ﻿using OCROperator.Models.Interface;
 using OCROperator.Models.Interface.Action;
 using System;
