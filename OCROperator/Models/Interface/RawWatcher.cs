@@ -19,6 +19,7 @@ namespace OCROperator.Models.Interface
         public string Language { get; set; }
         public bool HoldPDF { get; set; }
         public MailFactory MailFactory { get; set; }
+        public OCRAzureFactory OCRAzureFactory { get; set; }
         public List<Task> AllItems { get; set; } = new List<Task>();
         public ILogger Logger { get; set; }
         public OCRFactory OCRFactory { get; set; }

@@ -19,6 +19,7 @@ namespace OCROperator.Models.Interface
         internal string Language { get; set; }
         internal bool HoldPDF { get; set; }
         internal MailFactory MailFactory { get; set; }
+        internal OCRAzureFactory OCRAzureFactory { get; set; }
         internal List<Task> AllItems { get; set; }
         internal ILogger Logger { get; set; }
         internal OCRFactory OCRFactory { get; set; }
