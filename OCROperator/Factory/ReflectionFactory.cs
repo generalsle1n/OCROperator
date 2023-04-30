@@ -1,4 +1,5 @@
-﻿using OCROperator.Models.Interface;
+﻿using AutoMapper;
+using OCROperator.Models.Interface;
 using OCROperator.Models.Interface.Action;
 using System;
 using System.Collections.Generic;
@@ -33,12 +34,13 @@ namespace OCROperator.Factory
 
         internal IWatcher CopyPropertiesIntoObject(IWatcher SourceWatcher, IWatcher DestinationWatcher)
         {
-            DestinationWatcher.Destination = SourceWatcher.Destination;
-            DestinationWatcher.SuffixMetadata = SourceWatcher.SuffixMetadata;
-            DestinationWatcher.ActionSettings = SourceWatcher.ActionSettings;
-            DestinationWatcher.ActionType = SourceWatcher.ActionType;
-            DestinationWatcher.Type = SourceWatcher.Type;
-            DestinationWatcher.Language = SourceWatcher.Language;
+            MapperConfiguration mapperConfig = new MapperConfiguration(config =>
+            {
+                config.CreateMap(SourceWatcher.GetType(), DestinationWatcher.GetType());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            DestinationWatcher = (IWatcher)mapper.Map(SourceWatcher, SourceWatcher.GetType(), DestinationWatcher.GetType());
             return DestinationWatcher;
         }
     }
