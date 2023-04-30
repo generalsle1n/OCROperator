@@ -45,7 +45,7 @@ namespace OCROperator.Models.Interface.Action
             return Result;
         }
 
-        private string SearchForTicketNumber(string Text)
+        internal string SearchForTicketNumber(string Text)
         {
             string Result = string.Empty;
             Regex TicketSearch = new Regex(_ticketSearch);
