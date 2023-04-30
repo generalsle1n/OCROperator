@@ -126,7 +126,7 @@ namespace OCROperator.Models.Interface.Action
                 SetupClient();
             }
             //Search the Number in the ocr string
-            string TicketNumber = SearchForTicketNumber(Text);
+            string TicketNumber = ZammadFactory.SearchForTicketNumber(Text);
             Logger.LogInformation($"Ticket: {TicketNumber}");
             //Try to find Ticket in zammad
             Ticket Destination = await GetTicketFromNumber(TicketNumber.Replace("#", ""));
