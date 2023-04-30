@@ -17,37 +17,70 @@ namespace OCROperator.Factory
             _engine = new TesseractEngine(TesseractDataPath, Language);
         }
 
+        internal List<Bitmap> ConvertPDFToBitmap(string PDFPath)
+        {
+            List<Bitmap> Result = new List<Bitmap>();
+
+            using (PdfReader pdfReader = new PdfReader(PDFPath))
+            {
+                Logger.LogInformation($"File read {PDFPath}");
+
+                using (PdfDocument MainDocument = new PdfDocument(pdfReader))
+                {
+                    int AllPages = MainDocument.GetNumberOfPages();
+                    int Count = 1;
+                    PdfToImageConverter Converter = new PdfToImageConverter();
+                    while (Count <= AllPages)
+                    {
+                        PdfPage SinglePage = MainDocument.GetPage(Count);
+                        Bitmap BitMap = Converter.ConvertToBitmap(SinglePage);
+
+                        Result.Add(BitMap);
+
+                        Logger.LogInformation($"Processed {Count} from {AllPages}");
+                        Count++;
+                    }
+                }
+            }
+
+            return Result;
+        }
+        internal List<byte[]> ConvertBitmapListToByte(List<Bitmap> Pages)
+        {
+            List<byte[]> Result = new List<byte[]>();
+
+            foreach (Bitmap Page in Pages)
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    Page.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    Result.Add(ms.ToArray());
+                }
+            }
+            return Result;
+        }
+
         internal string GetTextFromPDF(string PDFPath)
         {
             StringBuilder Content = new StringBuilder();
             using (PdfReader pdfReader = new PdfReader(PDFPath))
             {
                 Logger.LogInformation($"File read {PDFPath}");
-                
-                using(PdfDocument MainDocument = new PdfDocument(pdfReader))
-                {
-                    int AllPages = MainDocument.GetNumberOfPages();
-                    int Count = 1;
-                    PdfToImageConverter Converter = new PdfToImageConverter();
-                    while(Count <= AllPages)
-                    {
-                        PdfPage SinglePage = MainDocument.GetPage(Count);
-                        Bitmap BitMap = Converter.ConvertToBitmap(SinglePage);
 
-                        using(MemoryStream ms = new MemoryStream())
+                List<Bitmap> AllPages = ConvertPDFToBitmap(PDFPath);
+                
+                foreach(Bitmap Page in AllPages)
+                {
+                    using(MemoryStream ms = new MemoryStream())
+                    {
+                        Page.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                        using (Pix picture = Pix.LoadFromMemory(ms.ToArray()))
                         {
-                            BitMap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                            using (Pix picture = Pix.LoadFromMemory(ms.ToArray()))
+                            using (Page TPage = _engine.Process(picture))
                             {
-                                using(Page TPage = _engine.Process(picture))
-                                {
-                                    Content.Append(TPage.GetText());
-                                }
+                                Content.Append(TPage.GetText());
                             }
                         }
-
-                        Logger.LogInformation($"Processed {Count} from {AllPages}");
-                        Count++;
                     }
                 }
             }
