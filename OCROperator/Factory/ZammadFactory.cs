@@ -24,7 +24,7 @@ namespace OCROperator.Factory
             }
             else
             {
-                TicketSearch = new Regex(_ticketSearch);
+                TicketSearch = new Regex(_alternativeTicketSearch);
                 Match = TicketSearch.Match(Text);
                 if (Match.Success)
                 {
