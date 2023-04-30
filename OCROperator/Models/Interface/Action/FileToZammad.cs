@@ -14,7 +14,6 @@ namespace OCROperator.Models.Interface.Action
         private TicketClient _ticketClient;
         private UserClient _userClient;
         private bool _setup = false;
-        private const string _ticketSearch = "#[0-9]{7}";
         private const string _mimePDF = "application/pdf";
         private const int _openStateID = 2;
         private int _userID;
@@ -42,18 +41,6 @@ namespace OCROperator.Models.Interface.Action
                 return null;
             }
 
-            return Result;
-        }
-
-        internal string SearchForTicketNumber(string Text)
-        {
-            string Result = string.Empty;
-            Regex TicketSearch = new Regex(_ticketSearch);
-            Match Match = TicketSearch.Match(Text);
-            if(Match.Success)
-            {
-                Result = Match.Value;
-            }
             return Result;
         }
 
