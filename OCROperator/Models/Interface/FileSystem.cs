@@ -23,12 +23,6 @@ namespace OCROperator.Models.Interface
         {
             string AllPath = Path.Combine(Directory.GetCurrentDirectory(), "tesseractData");
             Logger.LogInformation("Set Mailconfig");
-            MailFactory = new MailFactory
-            {
-                SMTPServer = "smtp.wehrle-werk.internal",
-                FromMail = "ocr@wehrle-werk.internal",
-                Port = 25
-            };
             OCRFactory = new OCRFactory()
             {
                 TesseractDataPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "tesseractData"),
