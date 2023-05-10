@@ -27,7 +27,7 @@ namespace OCROperator.Models.Interface
         {
             throw new NotImplementedException();
         }
-        public async Task ExecuteAsync()
+        public async Task ExecuteAsync(CancellationToken token)
         {
             throw new NotImplementedException();
         }

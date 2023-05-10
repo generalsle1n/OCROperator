@@ -12,6 +12,6 @@ namespace OCROperator.Models.Interface.Action
             Logger = logger;
             MailFactory = mailFactory;
         }
-        Task Execute(PapercutItem Item, string Text);
+        Task Execute(string Text, PapercutItem Item, byte[] PDFContent, CancellationToken token);
     }
 }

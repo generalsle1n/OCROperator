@@ -32,7 +32,7 @@ namespace OCROperator.Models.Interface
             OCRFactory.Setup();
             Action.Setup(Logger, MailFactory);
         }
-        public async Task ExecuteAsync()
+        public async Task ExecuteAsync(CancellationToken token)
         {
             string[] AllFiles = Directory.GetFiles(Destination, SuffixMetadata);
             Logger.LogDebug($"{AllFiles.Length} found");

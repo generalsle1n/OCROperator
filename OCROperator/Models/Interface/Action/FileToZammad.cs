@@ -117,8 +117,7 @@ namespace OCROperator.Models.Interface.Action
             }
             return null;
         }
-
-        public async Task Execute(PapercutItem Item, string Text)
+        public async Task Execute(string Text, PapercutItem Item, byte[] PDFContent, CancellationToken token)
         {
             if (!_setup)
             {
