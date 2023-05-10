@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OCROperator.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace OCROperator.Factory
     internal class ZammadFactory
     {
         private const string _ticketSearch = "#[0-9]{7}";
-        private const string _alternativeTicketSearch = "[0-9]{7}";
+        //private const string _alternativeTicketSearch = "[0-9]{7}";
 
         internal static string SearchForTicketNumber(string Text)
         {
@@ -24,12 +25,12 @@ namespace OCROperator.Factory
             }
             else
             {
-                TicketSearch = new Regex(_alternativeTicketSearch);
-                Match = TicketSearch.Match(Text);
-                if (Match.Success)
-                {
-                    Result = Match.Value;
-                }
+                //TicketSearch = new Regex(_alternativeTicketSearch);
+                //Match = TicketSearch.Match(Text);
+                //if (Match.Success)
+                //{
+                //    Result = Match.Value;
+                //}
             }
             return Result;
         }

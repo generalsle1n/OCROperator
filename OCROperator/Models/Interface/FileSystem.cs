@@ -30,7 +30,7 @@ namespace OCROperator.Models.Interface
                 Logger = Logger
             };
             OCRFactory.Setup();
-            Action.Setup(Logger, MailFactory);
+            Action.Setup(Logger, MailFactory, OCRAzureFactory);
         }
         public async Task ExecuteAsync(CancellationToken token)
         {
@@ -43,20 +43,8 @@ namespace OCROperator.Models.Interface
                 Logger.LogInformation($"File read {SingleFile} and deleted");
 
                 PapercutItem SingleItem = JsonSerializer.Deserialize<PapercutItem>(MetadataContent) ?? new PapercutItem();
-                AllItems.Add(ProcessSingleItemAsync(SingleItem));
-            }
-        }
-
-        public async Task ProcessSingleItemAsync(PapercutItem Item)
-        {
-            string path = Item.GetPathWithFile();
-            Logger.LogInformation("Get Text from PDF");
-            string result = OCRFactory.GetTextFromPDF(path);
-            Logger.LogInformation("OCR finished");
-            await Action.Execute(Item, result);
-            if(HoldPDF == false)
-            {
-                await DeletePDFAsync(Item);
+                byte[] PDFContent = await GetPDFContentAsync(SingleItem.GetPathWithFile());
+                ((IWatcher)this).ProcessSingleItemAsync(PDFContent, SingleItem, token);
             }
         }
 

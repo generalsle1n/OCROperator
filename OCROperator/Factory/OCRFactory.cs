@@ -17,31 +17,36 @@ namespace OCROperator.Factory
             _engine = new TesseractEngine(TesseractDataPath, Language);
         }
 
-        internal List<Bitmap> ConvertPDFToBitmap(string PDFPath)
+        internal List<Bitmap> ConvertPDFToBitmap(byte[] PDFByte)
         {
             List<Bitmap> Result = new List<Bitmap>();
 
-            using (PdfReader pdfReader = new PdfReader(PDFPath))
+            using (MemoryStream ms = new MemoryStream(PDFByte))
             {
-                Logger.LogInformation($"File read {PDFPath}");
-
-                using (PdfDocument MainDocument = new PdfDocument(pdfReader))
+                using (PdfReader pdfReader = new PdfReader(ms))
                 {
-                    int AllPages = MainDocument.GetNumberOfPages();
-                    int Count = 1;
-                    PdfToImageConverter Converter = new PdfToImageConverter();
-                    while (Count <= AllPages)
+                    Logger.LogInformation($"File read {pdfReader}");
+
+                    using (PdfDocument MainDocument = new PdfDocument(pdfReader))
                     {
-                        PdfPage SinglePage = MainDocument.GetPage(Count);
-                        Bitmap BitMap = Converter.ConvertToBitmap(SinglePage);
+                        int AllPages = MainDocument.GetNumberOfPages();
+                        int Count = 1;
+                        PdfToImageConverter Converter = new PdfToImageConverter();
+                        while (Count <= AllPages)
+                        {
+                            PdfPage SinglePage = MainDocument.GetPage(Count);
+                            Bitmap BitMap = Converter.ConvertToBitmap(SinglePage);
 
-                        Result.Add(BitMap);
+                            Result.Add(BitMap);
 
-                        Logger.LogInformation($"Processed {Count} from {AllPages}");
-                        Count++;
+                            Logger.LogInformation($"Processed {Count} from {AllPages}");
+                            Count++;
+                        }
                     }
                 }
             }
+
+
 
             return Result;
         }
@@ -60,31 +65,24 @@ namespace OCROperator.Factory
             return Result;
         }
 
-        internal string GetTextFromPDF(string PDFPath)
+        internal string GetTextFromPDF(byte[] PDFContent)
         {
             StringBuilder Content = new StringBuilder();
-            using (PdfReader pdfReader = new PdfReader(PDFPath))
+            List<Bitmap> AllPages = ConvertPDFToBitmap(PDFContent);
+            foreach (Bitmap Page in AllPages)
             {
-                Logger.LogInformation($"File read {PDFPath}");
-
-                List<Bitmap> AllPages = ConvertPDFToBitmap(PDFPath);
-                
-                foreach(Bitmap Page in AllPages)
+                using (MemoryStream ms = new MemoryStream())
                 {
-                    using(MemoryStream ms = new MemoryStream())
+                    Page.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    using (Pix picture = Pix.LoadFromMemory(ms.ToArray()))
                     {
-                        Page.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                        using (Pix picture = Pix.LoadFromMemory(ms.ToArray()))
+                        using (Page TPage = _engine.Process(picture))
                         {
-                            using (Page TPage = _engine.Process(picture))
-                            {
-                                Content.Append(TPage.GetText());
-                            }
+                            Content.Append(TPage.GetText());
                         }
                     }
                 }
             }
-            
             return Content.ToString();
         }
     }

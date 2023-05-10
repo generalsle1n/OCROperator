@@ -10,6 +10,7 @@ namespace OCROperator.Models.Interface.Action
         public string Settings { get; set; }
         public ILogger Logger { get; set; }
         public MailFactory MailFactory { get; set; }
+        public OCRAzureFactory OCRAzureFactory { get; set; }
         private ZammadAccount _account;
         private TicketClient _ticketClient;
         private UserClient _userClient;
@@ -103,7 +104,6 @@ namespace OCROperator.Models.Interface.Action
             
             return Result;
         }
-
         private async Task<Zammad.Client.Resources.User> GetUserFromMail(string Email)
         {
             try
@@ -126,6 +126,10 @@ namespace OCROperator.Models.Interface.Action
             }
             //Search the Number in the ocr string
             string TicketNumber = ZammadFactory.SearchForTicketNumber(Text);
+            if (TicketNumber.Equals(string.Empty) && OCRAzureFactory.Enabled)
+            {
+                TicketNumber = await OCRAzureFactory.ProcessPicutreZammadNumber(PDFContent, token);
+            }
             Logger.LogInformation($"Ticket: {TicketNumber}");
             //Try to find Ticket in zammad
             Ticket Destination = await GetTicketFromNumber(TicketNumber.Replace("#", ""));
