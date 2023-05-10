@@ -29,6 +29,7 @@ namespace OCROperator
                 IWatcher SingleWatcher = _rFactory.CreateObjectFromRaw((RawWatcher)watcher);
                 SingleWatcher.SetupLogger(_logger);
                 SingleWatcher.Setup();
+                SingleWatcher.OCRAzureFactory.Logger = _logger;
                 AllWatcher.Add(SingleWatcher);
             }
 
