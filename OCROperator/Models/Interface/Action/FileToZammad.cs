@@ -10,11 +10,11 @@ namespace OCROperator.Models.Interface.Action
         public string Settings { get; set; }
         public ILogger Logger { get; set; }
         public MailFactory MailFactory { get; set; }
+        public OCRAzureFactory OCRAzureFactory { get; set; }
         private ZammadAccount _account;
         private TicketClient _ticketClient;
         private UserClient _userClient;
         private bool _setup = false;
-        private const string _ticketSearch = "#[0-9]{7}";
         private const string _mimePDF = "application/pdf";
         private const int _openStateID = 2;
         private int _userID;
@@ -42,18 +42,6 @@ namespace OCROperator.Models.Interface.Action
                 return null;
             }
 
-            return Result;
-        }
-
-        private string SearchForTicketNumber(string Text)
-        {
-            string Result = string.Empty;
-            Regex TicketSearch = new Regex(_ticketSearch);
-            Match Match = TicketSearch.Match(Text);
-            if(Match.Success)
-            {
-                Result = Match.Value;
-            }
             return Result;
         }
 
@@ -116,7 +104,6 @@ namespace OCROperator.Models.Interface.Action
             
             return Result;
         }
-
         private async Task<Zammad.Client.Resources.User> GetUserFromMail(string Email)
         {
             try
@@ -130,8 +117,7 @@ namespace OCROperator.Models.Interface.Action
             }
             return null;
         }
-
-        public async Task Execute(PapercutItem Item, string Text)
+        public async Task Execute(string Text, PapercutItem Item, byte[] PDFContent, CancellationToken token)
         {
             if (!_setup)
             {
@@ -139,7 +125,11 @@ namespace OCROperator.Models.Interface.Action
                 SetupClient();
             }
             //Search the Number in the ocr string
-            string TicketNumber = SearchForTicketNumber(Text);
+            string TicketNumber = ZammadFactory.SearchForTicketNumber(Text);
+            if (TicketNumber.Equals(string.Empty) && OCRAzureFactory.Enabled)
+            {
+                TicketNumber = await OCRAzureFactory.ProcessPicutreZammadNumber(PDFContent, token);
+            }
             Logger.LogInformation($"Ticket: {TicketNumber}");
             //Try to find Ticket in zammad
             Ticket Destination = await GetTicketFromNumber(TicketNumber.Replace("#", ""));

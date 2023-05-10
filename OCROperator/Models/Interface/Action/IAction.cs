@@ -7,11 +7,13 @@ namespace OCROperator.Models.Interface.Action
         string Settings { get; set; }
         ILogger Logger { get; set; }
         MailFactory MailFactory { get; set; }
-        void Setup(ILogger logger, MailFactory mailFactory)
+        OCRAzureFactory OCRAzureFactory { get; set; }
+        void Setup(ILogger logger, MailFactory mailFactory, OCRAzureFactory Factory)
         {
             Logger = logger;
             MailFactory = mailFactory;
+            OCRAzureFactory = Factory;
         }
-        Task Execute(PapercutItem Item, string Text);
+        Task Execute(string Text, PapercutItem Item, byte[] PDFContent, CancellationToken token);
     }
 }
