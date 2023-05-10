@@ -89,7 +89,7 @@ namespace OCROperator.Factory
 
                     ReadOperationResult ReadResult = await WaitOnResult(guid, token);
 
-                    string ticket = GetTicketNumberFromResult(await ReadResult);
+                    string ticket = GetTicketNumberFromResult(ReadResult);
                     if(!ticket.Equals(string.Empty))
                     {
                         Result = ticket;
