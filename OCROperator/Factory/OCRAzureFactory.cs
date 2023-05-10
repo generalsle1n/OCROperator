@@ -81,7 +81,6 @@ namespace OCROperator.Factory
             {
                 using(MemoryStream ms = new MemoryStream(SinglePicutre))
                 {
-                    //scan_schuler_2023-05-09-14-40-33.pdf
                     ReadInStreamHeaders URL = await _client.ReadInStreamAsync(ms);
                     Logger.LogInformation("Uploaded to Azure");
                     Guid guid = ExtractGuidFromURL(URL.OperationLocation);
