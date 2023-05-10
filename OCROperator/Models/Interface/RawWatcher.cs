@@ -39,5 +39,10 @@ namespace OCROperator.Models.Interface
         {
             throw new NotImplementedException();
         }
+
+        public async Task<byte[]> GetPDFContentAsync(object Param)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

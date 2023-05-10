@@ -72,5 +72,10 @@ namespace OCROperator.Models.Interface
                 Logger.LogError(ex, $"Error on Deleting File: {path}");
             }
         }
+
+        public async Task<byte[]> GetPDFContentAsync(object Parameter)
+        {
+            return File.ReadAllBytes((string)Parameter);
+        }
     }
 }

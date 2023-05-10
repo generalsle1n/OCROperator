@@ -30,5 +30,6 @@ namespace OCROperator.Models.Interface
         internal Task ExecuteAsync(CancellationToken token);
         internal Task DeletePDFAsync(PapercutItem Item);
         internal Task ProcessSingleItemAsync(PapercutItem Item);
+        internal Task<byte[]> GetPDFContentAsync(object Parameter);
     }
 }
