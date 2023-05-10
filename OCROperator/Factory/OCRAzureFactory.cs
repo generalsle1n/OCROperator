@@ -87,7 +87,7 @@ namespace OCROperator.Factory
                     Guid guid = ExtractGuidFromURL(URL.OperationLocation);
                     Logger.LogInformation("Extracted Guid from URL");
 
-                    Task<ReadOperationResult> ReadResult = _client.GetReadResultAsync(guid, token);
+                    ReadOperationResult ReadResult = await WaitOnResult(guid, token);
 
                     string ticket = GetTicketNumberFromResult(await ReadResult);
                     if(!ticket.Equals(string.Empty))
