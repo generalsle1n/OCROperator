@@ -9,9 +9,9 @@ namespace OCROperator.Factory
 {
     public class MailFactory
     {
-        internal string SMTPServer { get;set; }
-        internal int Port { get; set; }
-        internal string FromMail { get; set; }
+        public string SMTPServer { get;set; }
+        public int Port { get; set; }
+        public string FromMail { get; set; }
         private SmtpClient _smtp;
 
         private void BuildSmtpClient()

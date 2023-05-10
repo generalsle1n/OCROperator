@@ -15,6 +15,7 @@ namespace OCROperator.Models.Interface
         public string Language { get; set; }
         public bool HoldPDF { get; set; }
         public MailFactory MailFactory { get; set; }
+        public OCRAzureFactory OCRAzureFactory { get; set; }
         public List<Task> AllItems { get; set; } = new List<Task>();
         public ILogger Logger { get; set; }
         public OCRFactory OCRFactory { get; set; }
@@ -22,12 +23,6 @@ namespace OCROperator.Models.Interface
         {
             string AllPath = Path.Combine(Directory.GetCurrentDirectory(), "tesseractData");
             Logger.LogInformation("Set Mailconfig");
-            MailFactory = new MailFactory
-            {
-                SMTPServer = "smtp.wehrle-werk.internal",
-                FromMail = "ocr@wehrle-werk.internal",
-                Port = 25
-            };
             OCRFactory = new OCRFactory()
             {
                 TesseractDataPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "tesseractData"),
@@ -35,9 +30,9 @@ namespace OCROperator.Models.Interface
                 Logger = Logger
             };
             OCRFactory.Setup();
-            Action.Setup(Logger, MailFactory);
+            Action.Setup(Logger, MailFactory, OCRAzureFactory);
         }
-        public async Task ExecuteAsync()
+        public async Task ExecuteAsync(CancellationToken token)
         {
             string[] AllFiles = Directory.GetFiles(Destination, SuffixMetadata);
             Logger.LogDebug($"{AllFiles.Length} found");
@@ -48,20 +43,8 @@ namespace OCROperator.Models.Interface
                 Logger.LogInformation($"File read {SingleFile} and deleted");
 
                 PapercutItem SingleItem = JsonSerializer.Deserialize<PapercutItem>(MetadataContent) ?? new PapercutItem();
-                AllItems.Add(ProcessSingleItemAsync(SingleItem));
-            }
-        }
-
-        public async Task ProcessSingleItemAsync(PapercutItem Item)
-        {
-            string path = Item.GetPathWithFile();
-            Logger.LogInformation("Get Text from PDF");
-            string result = OCRFactory.GetTextFromPDF(path);
-            Logger.LogInformation("OCR finished");
-            await Action.Execute(Item, result);
-            if(HoldPDF == false)
-            {
-                await DeletePDFAsync(Item);
+                byte[] PDFContent = await GetPDFContentAsync(SingleItem.GetPathWithFile());
+                ((IWatcher)this).ProcessSingleItemAsync(PDFContent, SingleItem, token);
             }
         }
 
@@ -76,6 +59,11 @@ namespace OCROperator.Models.Interface
             {
                 Logger.LogError(ex, $"Error on Deleting File: {path}");
             }
+        }
+
+        public async Task<byte[]> GetPDFContentAsync(object Parameter)
+        {
+            return File.ReadAllBytes((string)Parameter);
         }
     }
 }

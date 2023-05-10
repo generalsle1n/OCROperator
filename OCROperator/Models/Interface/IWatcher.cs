@@ -19,6 +19,7 @@ namespace OCROperator.Models.Interface
         internal string Language { get; set; }
         internal bool HoldPDF { get; set; }
         internal MailFactory MailFactory { get; set; }
+        internal OCRAzureFactory OCRAzureFactory { get; set; }
         internal List<Task> AllItems { get; set; }
         internal ILogger Logger { get; set; }
         internal OCRFactory OCRFactory { get; set; }
@@ -26,8 +27,15 @@ namespace OCROperator.Models.Interface
         void SetupLogger(ILogger logger) {
             Logger = logger;
         }
-        internal Task ExecuteAsync();
+        internal Task ExecuteAsync(CancellationToken token);
         internal Task DeletePDFAsync(PapercutItem Item);
-        internal Task ProcessSingleItemAsync(PapercutItem Item);
+        public async Task ProcessSingleItemAsync(byte[] PDFContent, PapercutItem Item, CancellationToken token)
+        {
+            string result = OCRFactory.GetTextFromPDF(PDFContent);
+            Logger.LogInformation("OCR finished");
+            await Action.Execute(result, Item, PDFContent, token);
+        }
+
+        internal Task<byte[]> GetPDFContentAsync(object Parameter);
     }
 }

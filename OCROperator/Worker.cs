@@ -29,6 +29,7 @@ namespace OCROperator
                 IWatcher SingleWatcher = _rFactory.CreateObjectFromRaw((RawWatcher)watcher);
                 SingleWatcher.SetupLogger(_logger);
                 SingleWatcher.Setup();
+                SingleWatcher.OCRAzureFactory.Logger = _logger;
                 AllWatcher.Add(SingleWatcher);
             }
 
@@ -41,7 +42,7 @@ namespace OCROperator
             {
                 foreach(IWatcher watcher in AllWatcher)
                 {
-                    await watcher.ExecuteAsync();
+                    await watcher.ExecuteAsync(stoppingToken);
                 }
                 await Task.Delay(1000, stoppingToken);
             }

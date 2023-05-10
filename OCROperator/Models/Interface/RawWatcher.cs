@@ -19,6 +19,7 @@ namespace OCROperator.Models.Interface
         public string Language { get; set; }
         public bool HoldPDF { get; set; }
         public MailFactory MailFactory { get; set; }
+        public OCRAzureFactory OCRAzureFactory { get; set; }
         public List<Task> AllItems { get; set; } = new List<Task>();
         public ILogger Logger { get; set; }
         public OCRFactory OCRFactory { get; set; }
@@ -26,7 +27,7 @@ namespace OCROperator.Models.Interface
         {
             throw new NotImplementedException();
         }
-        public async Task ExecuteAsync()
+        public async Task ExecuteAsync(CancellationToken token)
         {
             throw new NotImplementedException();
         }
@@ -35,6 +36,11 @@ namespace OCROperator.Models.Interface
             throw new NotImplementedException();
         }
         public async Task DeletePDFAsync(PapercutItem Item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<byte[]> GetPDFContentAsync(object Param)
         {
             throw new NotImplementedException();
         }
