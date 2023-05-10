@@ -72,7 +72,13 @@ namespace OCROperator.Factory
                 CreateClient();
             }
             string Result = string.Empty;
-            foreach (byte[] SinglePicutre in Picutre)
+            OCRFactory _ocr = new OCRFactory()
+            {
+                Logger = Logger,
+            };
+            List<Bitmap> BitMaps = _ocr.ConvertPDFToBitmap(PDFContent);
+            List<byte[]> sites = _ocr.ConvertBitmapListToByte(BitMaps);
+            foreach (byte[] SinglePicutre in sites)
             {
                 using(MemoryStream ms = new MemoryStream(SinglePicutre))
                 {
