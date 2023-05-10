@@ -53,7 +53,19 @@ namespace OCROperator.Factory
             return TicketNumber;
         }
 
-        internal async Task<string> ProcessPicutreZammadNumber(List<byte[]> Picutre, CancellationToken token)
+        private async Task<ReadOperationResult> WaitOnResult(Guid Guid, CancellationToken token)
+        {
+            ReadOperationResult Result = new ReadOperationResult();
+
+            while(Result.Status != OperationStatusCodes.Succeeded)
+            {
+                Result = await _client.GetReadResultAsync(Guid, token);
+            }
+
+            return Result;
+        }
+
+        internal async Task<string> ProcessPicutreZammadNumber(byte[] PDFContent, CancellationToken token)
         {
             if(_client == null)
             {
